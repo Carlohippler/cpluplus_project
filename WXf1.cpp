@@ -21,10 +21,12 @@ public:
 
         wxPanel* panel = new wxPanel(notebook, wxID_ANY);
         wxPanel* historico = new wxPanel(notebook, wxID_ANY);
+        wxPanel* carregarimg = new wxPanel(notebook, wxID_ANY);
 
 
         notebook->AddPage(panel, "Calculo Media");
         notebook->AddPage(historico, "Historico");
+        notebook->AddPage(carregarimg, "Logo");
 
 
         wxImage imglogo;
@@ -48,10 +50,6 @@ public:
         wxButton* Clear = new wxButton(panel, wxID_ANY, "Limpar", wxPoint(496, 100));
 
         wxButton* ClearOnly = new wxButton(panel, wxID_ANY, "Limpar Notas", wxPoint(494, 150));
-
-        wxGauge* barra = new wxGauge(panel, wxID_ANY, 100, wxPoint(100, 400), wxSize(350, 20));
-
-        barra->SetValue(0);
 
         wxPanel* fundoBarra = new wxPanel(panel, wxID_ANY, wxPoint(100, 400), wxSize(350, 20));
         fundoBarra->SetBackgroundColour(wxColour(50, 50, 50));
@@ -87,15 +85,6 @@ public:
 
         wxButton* voltarbranco = new wxButton(panel, wxID_ANY, "Padrão", wxPoint(494, 250));
 
-        for (int i = 0; i <= 100; i += 20) {
-
-            int larguraNova = (i * 350) / 100;
-            preenchimento->SetSize(larguraNova, 20);
-
-            preenchimento->Update();
-            wxMilliSleep(50);
-        }
-
         voltarbranco->Bind(wxEVT_BUTTON, [panel, historico, texto, textonota1, textonota2, textonota3, textonota4](wxCommandEvent&) {
 
             panel->SetBackgroundColour(*wxWHITE);
@@ -113,8 +102,8 @@ public:
     
         
 
-        void main(); {
-            mudarBg->Bind(wxEVT_BUTTON, [panel, historico, textonota1, textonota2, textonota3, textonota4, texto, preenchimento](wxCommandEvent&) {
+        
+            mudarBg->Bind(wxEVT_BUTTON, [panel, historico, textonota1, textonota2, textonota3, textonota4, texto, preenchimento, resolu](wxCommandEvent&) {
 
                 int r = rand() % 256;
                 int g = rand() % 256;
@@ -124,18 +113,19 @@ public:
 
                 panel->SetBackgroundColour(corAleatoria);
                 historico->SetBackgroundColour(corAleatoria);
-                preenchimento->SetBackgroundColour(wxColour(256 - r, 256 - g, 256 - b));
+                preenchimento->SetBackgroundColour(wxColour(256 -r, 256 -g, 256 -b));
                 
                 panel->Refresh();
                 
 
-                if ((r, g, b) / 3 < 128) {
+                if ((r + g + b) / 3 < 128) {
 
                     texto->SetForegroundColour(*wxWHITE);
                     textonota1->SetForegroundColour(*wxWHITE);
                     textonota2->SetForegroundColour(*wxWHITE);
                     textonota3->SetForegroundColour(*wxWHITE);
                     textonota4->SetForegroundColour(*wxWHITE);
+                    resolu->SetForegroundColour(wxColour(84, 240, 84));
                     
 
                 }
@@ -146,13 +136,14 @@ public:
                     textonota2->SetForegroundColour(*wxBLACK);
                     textonota3->SetForegroundColour(*wxBLACK);
                     textonota4->SetForegroundColour(*wxBLACK);
+                    resolu ->SetForegroundColour(wxColour(8, 48, 8));
+                    
                 }
 
                 panel->Refresh();
                 historico->Refresh();
 
                 });
-                }
         
     
         
@@ -160,35 +151,34 @@ public:
             lsHistorico->Clear();
             });
 
-        ClearOnly->Bind(wxEVT_BUTTON, [campoNota1, campoNota2, campoNota3, campoNota4, barra, resolu](wxCommandEvent&) {
+        ClearOnly->Bind(wxEVT_BUTTON, [campoNota1, campoNota2, campoNota3, campoNota4, resolu, preenchimento](wxCommandEvent&) {
           
             campoNota1->Clear();
             campoNota2->Clear();
             campoNota3->Clear();
             campoNota4->Clear();
-            barra->SetValue(0);
+            preenchimento->SetSize(0, 20);
 
             resolu->SetLabel("Media: ---");
             resolu->SetForegroundColour(*wxBLACK);
 
             });
 
-        Clear->Bind(wxEVT_BUTTON, [campoNome, campoNota1, campoNota2, campoNota3, campoNota4, barra, resolu](wxCommandEvent&){
+        Clear->Bind(wxEVT_BUTTON, [campoNome, campoNota1, campoNota2, campoNota3, campoNota4, resolu, preenchimento](wxCommandEvent&){
 
             campoNome->Clear();
             campoNota1->Clear();
             campoNota2->Clear();
             campoNota3->Clear();
             campoNota4->Clear();
-            barra->SetValue(0);
+            preenchimento->SetSize(0, 20);
             
             resolu->SetLabel("Media: ---");
-            resolu->SetForegroundColour(*wxBLACK);
 
             });
 
 
-        CriarMedia->Bind(wxEVT_BUTTON, [barra, campoNome, resolu, campoNota1, campoNota2, campoNota3, campoNota4, lsHistorico](wxCommandEvent&) {
+        CriarMedia->Bind(wxEVT_BUTTON, [campoNome, resolu, campoNota1, campoNota2, campoNota3, campoNota4, lsHistorico, preenchimento](wxCommandEvent&) {
 
             wxString nomealuno = campoNome->GetValue();
 
@@ -245,13 +235,14 @@ public:
         if (!nomealuno.IsEmpty()) {
 
             //Barra de progressão
-            for (int i = 0; i <= 100; i += 20) {
+            for (int i = 0; i <= 100; i += 5) {
 
-                barra->SetValue(i);
+                int larguraNova = (i * 350) / 100;
+                preenchimento->SetSize(larguraNova, 20);
 
-                barra->Update();
+                preenchimento->Update();
 
-                wxMilliSleep(100);
+                wxMilliSleep(50);
             }
 
 
@@ -264,7 +255,7 @@ public:
             wxString itemHistorico = nomealuno + " -Média: " + wxString::Format("%.1f (%s)", res, status);
             lsHistorico->Append(itemHistorico);
             
-            barra->SetValue(0);
+            preenchimento->SetSize(0, 20);
 
         }
         else {
