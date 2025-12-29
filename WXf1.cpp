@@ -4,6 +4,8 @@
 #include<wx/notebook.h>
 #include <cstdlib>
 #include <ctime>
+#include <wx/filefn.h>
+#include <wx/stdpaths.h>
 
 using namespace std;
 
