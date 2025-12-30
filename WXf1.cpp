@@ -1,4 +1,4 @@
-#include <wx/wx.h>
+Ôªø#include <wx/wx.h>
 #include <iostream>
 #include <wx/msgdlg.h>
 #include<wx/notebook.h>
@@ -15,20 +15,22 @@ using namespace std;
 class MyFrame : public wxFrame {
 public:
 
-    //Daqui pra baixo È tudo UI
-    MyFrame() : wxFrame(NULL, wxID_ANY, "Media Escola", wxDefaultPosition, wxSize(650, 500)) {
+    //Daqui pra baixo √© tudo UI
+    MyFrame() : wxFrame(NULL, wxID_ANY, "Media Escola", wxDefaultPosition, wxSize(850, 600)) {
 
 
-        wxNotebook* notebook = new wxNotebook(this, wxID_ANY);
+        wxNotebook* notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_LEFT);
 
         wxPanel* panel = new wxPanel(notebook, wxID_ANY);
         wxPanel* historico = new wxPanel(notebook, wxID_ANY);
         wxPanel* carregarimg = new wxPanel(notebook, wxID_ANY);
+        wxPanel* config = new wxPanel(notebook, wxID_ANY);
 
 
         notebook->AddPage(panel, "Calculo Media");
         notebook->AddPage(historico, "Historico");
         notebook->AddPage(carregarimg, "Logo");
+        notebook->AddPage(config, "Configura√ß√£o");
 
 
         wxImage imglogo;
@@ -47,11 +49,13 @@ public:
 
         wxString nomealuno;
 
-        wxButton* CriarMedia = new wxButton(panel, wxID_ANY, "Criar Media", wxPoint(495, 50));
+        wxButton* menuAbas = new wxButton(panel, wxID_ANY, "Menu", wxPoint(740, 10), wxSize(40, 20));
 
-        wxButton* Clear = new wxButton(panel, wxID_ANY, "Limpar", wxPoint(496, 100));
+        wxButton* CriarMedia = new wxButton(panel, wxID_ANY, "Criar Media", wxPoint(700, 50));
 
-        wxButton* ClearOnly = new wxButton(panel, wxID_ANY, "Limpar Notas", wxPoint(494, 150));
+        wxButton* Clear = new wxButton(panel, wxID_ANY, "Limpar", wxPoint(705, 100));
+
+        wxButton* ClearOnly = new wxButton(panel, wxID_ANY, "Limp Notas", wxPoint(700, 150));
 
         wxPanel* fundoBarra = new wxPanel(panel, wxID_ANY, wxPoint(100, 400), wxSize(350, 20));
         fundoBarra->SetBackgroundColour(wxColour(50, 50, 50));
@@ -61,11 +65,11 @@ public:
 
         wxStaticText* textonota1 = new wxStaticText(panel, wxID_ANY, "Digite a primeira nota do Aluno:", wxPoint(55, 100));
 
-        wxStaticText* textonota2 = new wxStaticText(panel, wxID_ANY, "Digite a nota de recuperaÁ„o:", wxPoint(270, 100));
+        wxStaticText* textonota2 = new wxStaticText(panel, wxID_ANY, "Digite a nota de recupera√ß√£o:", wxPoint(270, 100));
 
         wxStaticText* textonota3 = new wxStaticText(panel, wxID_ANY, "Digite a segunda nota do Aluno:", wxPoint(55, 200));
 
-        wxStaticText* textonota4 = new wxStaticText(panel, wxID_ANY, "Digite a nota de recuperaÁ„o:", wxPoint(270, 200));
+        wxStaticText* textonota4 = new wxStaticText(panel, wxID_ANY, "Digite a nota de recupera√ß√£o:", wxPoint(270, 200));
 
         wxStaticText* textoMedia = new wxStaticText(panel, wxID_ANY, "Resultado da Media do Aluno:", wxPoint(125, 280));
 
@@ -83,14 +87,36 @@ public:
 
         wxButton* limpHist = new wxButton(historico, wxID_ANY, "Limpar Historico",  wxPoint(20, 380));
 
-        wxButton* mudarBg = new wxButton(panel, wxID_ANY, "Mudar Cor", wxPoint(494, 200));
+        wxButton* mudarBg = new wxButton(config, wxID_ANY, "Mudar Cor", wxPoint(494, 200));
 
-        wxButton* voltarbranco = new wxButton(panel, wxID_ANY, "Padr„o", wxPoint(494, 250));
+        wxButton* voltarbranco = new wxButton(config, wxID_ANY, "Padr√£o", wxPoint(494, 250));
 
-        voltarbranco->Bind(wxEVT_BUTTON, [panel, historico, texto, textonota1, textonota2, textonota3, textonota4](wxCommandEvent&) {
+        menuAbas->Bind(wxEVT_BUTTON, [panel, historico, voltarbranco, mudarBg, Clear, ClearOnly, carregarimg, CriarMedia, menuAbas] (wxCommandEvent&) {
+
+            panel->Refresh();
+
+            if (menuAbas->GetPosition() == wxPoint(540, 10)) {
+
+                CriarMedia->SetPosition(wxPoint(700, 50));
+                Clear->SetPosition(wxPoint(705, 100));
+                ClearOnly->SetPosition(wxPoint(700, 150));
+                menuAbas->SetPosition(wxPoint(740, 10));
+
+            }
+            else {
+                CriarMedia->SetPosition(wxPoint(495, 50));
+                Clear->SetPosition(wxPoint(496, 100));
+                ClearOnly->SetPosition(wxPoint(494, 150));
+                menuAbas->SetPosition(wxPoint(540, 10));
+            }
+
+            });
+
+        voltarbranco->Bind(wxEVT_BUTTON, [panel, historico, texto, textonota1, textonota2, textonota3, textonota4, preenchimento](wxCommandEvent&) {
 
             panel->SetBackgroundColour(*wxWHITE);
             historico->SetBackgroundColour(*wxWHITE);
+            preenchimento->SetBackgroundColour(*wxGREEN);
 
             texto->SetForegroundColour(*wxBLACK);
             textonota1->SetForegroundColour(*wxBLACK);
@@ -187,7 +213,7 @@ public:
             double res1, res2;
             double res;
 
-            //Aqui È funÁao de campo de identificaÁao de erro de escrita num
+            //Aqui √© fun√ßao de campo de identifica√ßao de erro de escrita num
 
             double nota1, nota2, nota3, nota4;
 
@@ -236,7 +262,7 @@ public:
 
         if (!nomealuno.IsEmpty()) {
 
-            //Barra de progress„o
+            //Barra de progress√£o
             for (int i = 0; i <= 100; i += 5) {
 
                 int larguraNova = (i * 350) / 100;
@@ -250,11 +276,11 @@ public:
 
             wxString status = (res >= 60) ? "Aprovado" : "Reprovado";
 
-            wxString msgFinal = wxString::Format("A mÈdia do aluno %s È %.1f. Status: %s", nomealuno, res, status);
+            wxString msgFinal = wxString::Format("A m√©dia do aluno %s √© %.1f. Status: %s", nomealuno, res, status);
 
             wxMessageBox(msgFinal);
 
-            wxString itemHistorico = nomealuno + " -MÈdia: " + wxString::Format("%.1f (%s)", res, status);
+            wxString itemHistorico = nomealuno + " - M√©dia: " + wxString::Format("%.1f (%s)", res, status);
             lsHistorico->Append(itemHistorico);
             
             preenchimento->SetSize(0, 20);
@@ -273,7 +299,7 @@ public:
     } 
 }; 
 
-//a classe da AplicaÁ„o
+//a classe da Aplica√ß√£o
 class MyApp : public wxApp {
 public:
 
@@ -285,12 +311,12 @@ public:
         frame->Show(true);
 
         // Mensagem de boas-vindas depois da janela carregar
-        wxMessageBox("Bem Vindo ao sistema de media escolar!");
+        //wxMessageBox("Bem Vindo ao sistema de media escolar!");
 
         return true;
 
     }
 };
 
-// Inicia a aplicaÁ„o
+// Inicia a aplica√ß√£o
 wxIMPLEMENT_APP(MyApp);
