@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>WXUSINGDLL;wxMSVC_VERSION_AUTO;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;__WXMSW__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\wxwidgets\include;C:\wxwidgets\lib\vc_x64_lib\mswud;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\wxwidgets\include;C:\wxwidgets\lib\vc14x_x64_dll\mswud;C:\wxwidgets;C:\wxwidgets\lib\vc14x_x64_dll;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>

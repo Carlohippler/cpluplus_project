@@ -19,18 +19,23 @@ public:
     MyFrame() : wxFrame(NULL, wxID_ANY, "Media Escola", wxDefaultPosition, wxSize(850, 600)) {
 
 
-        wxNotebook* notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_LEFT);
+        wxNotebook* notebook = new wxNotebook(this, wxID_ANY, wxPoint(0, 0), wxSize(840, 600), wxNB_RIGHT);
+        
 
         wxPanel* panel = new wxPanel(notebook, wxID_ANY);
         wxPanel* historico = new wxPanel(notebook, wxID_ANY);
         wxPanel* carregarimg = new wxPanel(notebook, wxID_ANY);
         wxPanel* config = new wxPanel(notebook, wxID_ANY);
+        
+        notebook->AddPage(panel, "Calculo");
+        notebook->AddPage(historico, "Hist");   
+        notebook->AddPage(carregarimg, "Img"); 
+        notebook->AddPage(config, "Config");
 
-
-        notebook->AddPage(panel, "Calculo Media");
-        notebook->AddPage(historico, "Historico");
-        notebook->AddPage(carregarimg, "Logo");
-        notebook->AddPage(config, "Configuração");
+        panel->SetBackgroundColour(*wxWHITE);
+        historico->SetBackgroundColour(*wxWHITE);
+        carregarimg->SetBackgroundColour(*wxWHITE);
+        config->SetBackgroundColour(*wxWHITE);
 
 
         wxImage imglogo;
@@ -63,6 +68,8 @@ public:
         wxPanel* preenchimento = new wxPanel(fundoBarra, wxID_ANY, wxPoint(0, 0), wxSize(0, 20));
         preenchimento->SetBackgroundColour(*wxGREEN);
 
+        wxStaticText* configuracao = new wxStaticText(config, wxID_ANY, "Configurações", wxPoint(350, 20));
+
         wxStaticText* textonota1 = new wxStaticText(panel, wxID_ANY, "Digite a primeira nota do Aluno:", wxPoint(55, 100));
 
         wxStaticText* textonota2 = new wxStaticText(panel, wxID_ANY, "Digite a nota de recuperação:", wxPoint(270, 100));
@@ -87,28 +94,42 @@ public:
 
         wxButton* limpHist = new wxButton(historico, wxID_ANY, "Limpar Historico",  wxPoint(20, 380));
 
-        wxButton* mudarBg = new wxButton(config, wxID_ANY, "Mudar Cor", wxPoint(494, 200));
+        wxButton* mudarBg = new wxButton(config, wxID_ANY, "Mudar Cor", wxPoint(100, 200));
 
-        wxButton* voltarbranco = new wxButton(config, wxID_ANY, "Padrão", wxPoint(494, 250));
+        wxButton* voltarbranco = new wxButton(config, wxID_ANY, "Padrão", wxPoint(100, 250));
 
-        menuAbas->Bind(wxEVT_BUTTON, [panel, historico, voltarbranco, mudarBg, Clear, ClearOnly, carregarimg, CriarMedia, menuAbas] (wxCommandEvent&) {
+        wxPanel* menulateral = new wxPanel(this, wxID_ANY, wxPoint(600, 0), wxSize(250, 600));
+        menulateral->SetBackgroundColour(wxColour(133, 133, 133));
+        menulateral->Hide();
 
-            panel->Refresh();
+        menuAbas->Bind(wxEVT_BUTTON, [panel, historico, this, menulateral, voltarbranco, mudarBg, Clear, ClearOnly, carregarimg, CriarMedia, notebook, menuAbas] (wxCommandEvent&) {
+        
+            if (menulateral->IsShown()) {
+                menulateral->Hide();
 
-            if (menuAbas->GetPosition() == wxPoint(540, 10)) {
-
+                menuAbas ->SetPosition(wxPoint(740, 10));
                 CriarMedia->SetPosition(wxPoint(700, 50));
                 Clear->SetPosition(wxPoint(705, 100));
                 ClearOnly->SetPosition(wxPoint(700, 150));
-                menuAbas->SetPosition(wxPoint(740, 10));
+
+                this->Refresh();
 
             }
             else {
-                CriarMedia->SetPosition(wxPoint(495, 50));
-                Clear->SetPosition(wxPoint(496, 100));
-                ClearOnly->SetPosition(wxPoint(494, 150));
+                menulateral->Show();
+                menulateral->Raise();
+
                 menuAbas->SetPosition(wxPoint(540, 10));
+                CriarMedia->SetPosition(wxPoint(500, 50));
+                Clear->SetPosition(wxPoint(505, 100));
+                ClearOnly->SetPosition(wxPoint(500, 150));
+
+                this->Refresh();
             }
+
+            
+              
+        
 
             });
 
