@@ -99,8 +99,10 @@ public:
         wxButton* voltarbranco = new wxButton(config, wxID_ANY, "Padrão", wxPoint(100, 250));
 
         wxPanel* menulateral = new wxPanel(this, wxID_ANY, wxPoint(600, 0), wxSize(250, 600));
-        menulateral->SetBackgroundColour(wxColour(133, 133, 133));
+        menulateral->SetBackgroundColour(wxColour(200, 200, 200));
         menulateral->Hide();
+
+    
 
         menuAbas->Bind(wxEVT_BUTTON, [panel, historico, this, menulateral, voltarbranco, mudarBg, Clear, ClearOnly, carregarimg, CriarMedia, notebook, menuAbas] (wxCommandEvent&) {
         
