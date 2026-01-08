@@ -23,19 +23,29 @@ public:
         
 
         wxPanel* panel = new wxPanel(notebook, wxID_ANY);
-        wxPanel* historico = new wxPanel(notebook, wxID_ANY);
-        wxPanel* carregarimg = new wxPanel(notebook, wxID_ANY);
+        wxPanel* historico = new wxPanel(notebook, wxID_ANY);      
         wxPanel* config = new wxPanel(notebook, wxID_ANY);
+        
         
         notebook->AddPage(panel, "Calculo");
         notebook->AddPage(historico, "Hist");   
-        notebook->AddPage(carregarimg, "Img"); 
         notebook->AddPage(config, "Config");
+        
 
         panel->SetBackgroundColour(*wxWHITE);
         historico->SetBackgroundColour(*wxWHITE);
-        carregarimg->SetBackgroundColour(*wxWHITE);
         config->SetBackgroundColour(*wxWHITE);
+
+
+
+        wxPanel* menulateral = new wxPanel(this, wxID_ANY, wxPoint(600, 0), wxSize(250, 600));
+        menulateral->SetBackgroundColour(wxColour(200, 200, 200));
+        menulateral->Hide();
+
+        wxPanel* login = new wxPanel(this, wxID_ANY, wxPoint(0, 0), wxSize(850, 600));
+        login->Raise();
+        login->Hide();
+
 
 
         wxImage imglogo;
@@ -54,7 +64,8 @@ public:
 
         wxString nomealuno;
 
-        wxButton* menuAbas = new wxButton(panel, wxID_ANY, "Menu", wxPoint(740, 10), wxSize(40, 20));
+        wxButton* menuAbas = new wxButton(this, wxID_ANY, "Menu", wxPoint(740, 10), wxSize(40, 20));
+        menuAbas->Raise();
 
         wxButton* CriarMedia = new wxButton(panel, wxID_ANY, "Criar Media", wxPoint(700, 50));
 
@@ -90,7 +101,7 @@ public:
 
         wxTextCtrl* campoNota4 = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(270, 225), wxSize(170, -1));
 
-        wxListBox* lsHistorico = new wxListBox(historico, wxID_ANY, wxPoint(20, 20), wxSize(580, 350));
+        wxListBox* lsHistorico = new wxListBox(historico, wxID_ANY, wxPoint(20, 20), wxSize(570, 350));
 
         wxButton* limpHist = new wxButton(historico, wxID_ANY, "Limpar Historico",  wxPoint(20, 380));
 
@@ -98,13 +109,42 @@ public:
 
         wxButton* voltarbranco = new wxButton(config, wxID_ANY, "Padrão", wxPoint(100, 250));
 
-        wxPanel* menulateral = new wxPanel(this, wxID_ANY, wxPoint(600, 0), wxSize(250, 600));
-        menulateral->SetBackgroundColour(wxColour(200, 200, 200));
-        menulateral->Hide();
+        wxButton* Calculadora = new wxButton(menulateral, wxID_ANY, "Calculo", wxPoint(125, 25));
 
-    
+        wxButton* historicoL = new wxButton(menulateral, wxID_ANY, "Historico", wxPoint(125, 75));
+        
+        wxButton* configL = new wxButton(menulateral, wxID_ANY, "Configurações", wxPoint(105, 450));
 
-        menuAbas->Bind(wxEVT_BUTTON, [panel, historico, this, menulateral, voltarbranco, mudarBg, Clear, ClearOnly, carregarimg, CriarMedia, notebook, menuAbas] (wxCommandEvent&) {
+
+        Calculadora->Bind(wxEVT_BUTTON, [notebook, menulateral, menuAbas](wxCommandEvent&) {
+
+            notebook->SetSelection(0);
+           
+
+            wxCommandEvent evento(wxEVT_BUTTON, menuAbas->GetId());
+            menuAbas->GetEventHandler()->ProcessEvent(evento);
+
+            });
+
+        historicoL->Bind(wxEVT_BUTTON, [notebook, menulateral, menuAbas](wxCommandEvent&) {
+
+            notebook->SetSelection(1);
+            
+            wxCommandEvent evento(wxEVT_BUTTON, menuAbas ->GetId());
+            menuAbas->GetEventHandler()->ProcessEvent(evento);
+
+            });
+
+        configL->Bind(wxEVT_BUTTON, [notebook, menulateral, menuAbas](wxCommandEvent&) {
+          
+            notebook->SetSelection(2);
+            
+            wxCommandEvent evento(wxEVT_BUTTON, menuAbas->GetId());
+            menuAbas->GetEventHandler()->ProcessEvent(evento);
+
+            });
+
+        menuAbas->Bind(wxEVT_BUTTON, [panel, historico, this, menulateral, voltarbranco, mudarBg, Clear, ClearOnly, CriarMedia, notebook, menuAbas] (wxCommandEvent&) {
         
             if (menulateral->IsShown()) {
                 menulateral->Hide();
@@ -332,6 +372,7 @@ public:
        
         MyFrame* frame = new MyFrame();
         frame->Show(true);
+        
 
         // Mensagem de boas-vindas depois da janela carregar
         //wxMessageBox("Bem Vindo ao sistema de media escolar!");
