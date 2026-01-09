@@ -6,9 +6,42 @@
 #include <ctime>
 #include <wx/filefn.h>
 #include <wx/stdpaths.h>
+#include "sqlite3.h"
 
 using namespace std;
 
+//Banco de dados SQLite
+void InitBancoDados() {
+
+    sqlite3* db;
+    char* zErrMsg = 0;
+    int rc;
+
+    rc = sqlite3_open("Config/Dados.db", &db);
+
+    if (rc) {
+
+        wxMessageBox("Erro ao abrir banco de dados: " + wxString(sqlite3_errmsg(db)));
+        return;
+    }
+
+    const char* sqlHistorico = "CREATE TABLE IF NOT EXISTS HISTORICO("\
+        "ID INTEGER PRIMARY KEY AUTOINCREMENT,"\
+        "NOME TEXT NOT NULL,"\
+        "MEDIA REAL NOT NULL,"\
+        "STATUS TEXT NOT NULL);";
+
+    const char* sqlConfig = "CREATE TABLE IF NOT EXISTS CONFIGS("\
+        "CHAVE TEXT PRIMARY KEY,"\
+        "VALOR TEXT NOT NULL);";
+
+    sqlite3_exec(db, sqlHistorico, NULL, 0, &zErrMsg);
+    sqlite3_exec(db, sqlConfig, NULL, 0, &zErrMsg);
+
+    sqlite3_close(db);
+
+
+}
 
 
 // a classe da Janela (Frame)
@@ -49,7 +82,7 @@ public:
 
 
         wxImage imglogo;
-        if (imglogo.LoadFile("logo_escola.png", wxBITMAP_TYPE_ANY)) {
+        if (imglogo.LoadFile("Config/logo_escola.png", wxBITMAP_TYPE_ANY)) {
 
             imglogo.Rescale(80, 80, wxIMAGE_QUALITY_HIGH);
 
@@ -280,15 +313,15 @@ public:
 
             double nota1, nota2, nota3, nota4;
 
-            if (!campoNota1->GetValue().ToDouble(&nota1) || 
-                !campoNota2->GetValue().ToDouble(&nota2) || 
-                !campoNota3->GetValue().ToDouble(&nota3) || 
-                !campoNota4->GetValue().ToDouble(&nota4)){ 
+            if (!campoNota1->GetValue().ToDouble(&nota1) ||
+                !campoNota2->GetValue().ToDouble(&nota2) ||
+                !campoNota3->GetValue().ToDouble(&nota3) ||
+                !campoNota4->GetValue().ToDouble(&nota4)) {
                 wxMessageBox("Erro: Digite um Valor numerico valido!");
                 return;
             }
-            
-            if (nota1 <0 || nota1 >100 || nota2 < 0 || nota2 >100 || 
+
+            if (nota1 < 0 || nota1 >100 || nota2 < 0 || nota2 >100 ||
                 nota3 < 0 || nota3 >100 || nota4 < 0 || nota4 >100) {
                 wxMessageBox("Erro: Digite uma nota valida entre 0 e 100!");
 
@@ -311,6 +344,8 @@ public:
 
             res = (res1 + res2) / 2;
 
+            wxString status = (res >= 60) ? "Aprovado" : "Reprovado";
+
             wxString strRes = wxString::Format("Media Final: %.1f", res);
             resolu->SetLabel(strRes);
 
@@ -323,21 +358,40 @@ public:
 
             resolu->Refresh();
 
-        if (!nomealuno.IsEmpty()) {
+            if (!nomealuno.IsEmpty()) {
 
-            //Barra de progressão
-            for (int i = 0; i <= 100; i += 5) {
+                //Barra de progressão
+                for (int i = 0; i <= 100; i += 5) {
 
-                int larguraNova = (i * 350) / 100;
-                preenchimento->SetSize(larguraNova, 20);
+                    int larguraNova = (i * 350) / 100;
+                    preenchimento->SetSize(larguraNova, 20);
 
-                preenchimento->Update();
+                    preenchimento->Update();
 
-                wxMilliSleep(50);
+                    wxMilliSleep(50);
+                }
+
+                sqlite3* db;
+                if (sqlite3_open("Config/Dados.db", &db) == SQLITE_OK) {
+
+                    wxString query = wxString::Format("INSERT INTO HISTORICO (NOME, MEDIA, STATUS) VALUES ('%s', %.1f, '%s');",
+                        nomealuno, res, status);
+
+                    char* zErrMsg = 0;
+
+                    int rc = sqlite3_exec(db, query.mb_str(), NULL, 0, &zErrMsg);
+
+                    if (rc != SQLITE_OK) {
+
+                        wxMessageBox("Erro SQL: " + wxString(zErrMsg));
+                        sqlite3_free(zErrMsg);
+
+                    }
+                    sqlite3_close(db);
+
             }
 
 
-            wxString status = (res >= 60) ? "Aprovado" : "Reprovado";
 
             wxString msgFinal = wxString::Format("A média do aluno %s é %.1f. Status: %s", nomealuno, res, status);
 
@@ -360,6 +414,9 @@ public:
         this->Centre(); 
 
     } 
+
+    
+
 }; 
 
 //a classe da Aplicação
@@ -369,13 +426,22 @@ public:
     virtual bool OnInit() {
         srand(time(NULL));
         wxInitAllImageHandlers();
+        
+
+        wxString config = "Config";
+
+        if (!wxDirExists(config)) {
+            wxMkdir(config);
+        }
+
+        InitBancoDados();
        
         MyFrame* frame = new MyFrame();
         frame->Show(true);
         
 
         // Mensagem de boas-vindas depois da janela carregar
-        //wxMessageBox("Bem Vindo ao sistema de media escolar!");
+        // wxMessageBox("Bem Vindo ao sistema de media escolar!");
 
         return true;
 
