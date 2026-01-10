@@ -1,0 +1,27 @@
+# Pastas de Build (CMake)
+out/
+build/
+bin/
+
+# Visual Studio (Temporários e Bancos de Dados de Cache)
+.vs/
+*.sln
+*.vcxproj*
+*.user
+*.suo
+*.db
+*.opendb
+
+# Arquivos gerados pelo CPack (Instalador)
+_CPack_Packages/
+CPackConfig.cmake
+CPackSourceConfig.cmake
+*.install.cmake
+
+# Binários e DLLs (que não devem ser versionados)
+*.exe
+*.dll
+*.pdb
+
+# Dados locais
+Config/dados.db
