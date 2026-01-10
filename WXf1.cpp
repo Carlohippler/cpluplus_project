@@ -17,7 +17,7 @@ void InitBancoDados() {
     char* zErrMsg = 0;
     int rc;
 
-    rc = sqlite3_open("Config/Dados.db", &db);
+    rc = sqlite3_open("Config/dados.db", &db);
 
     if (rc) {
 
@@ -82,11 +82,11 @@ public:
 
 
         wxImage imglogo;
-        if (imglogo.LoadFile("Config/logo_escola.png", wxBITMAP_TYPE_ANY)) {
+        if (imglogo.LoadFile("Config/logo_inicialC.png", wxBITMAP_TYPE_ANY)) {
 
-            imglogo.Rescale(80, 80, wxIMAGE_QUALITY_HIGH);
+            imglogo.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
 
-            wxStaticBitmap* logotipo = new wxStaticBitmap(panel, wxID_ANY,wxBitmap(imglogo ), wxPoint(20,10));
+            wxStaticBitmap* logotipo = new wxStaticBitmap(panel, wxID_ANY,wxBitmap(imglogo ), wxPoint(10,0));
         }
 
 
@@ -372,7 +372,7 @@ public:
                 }
 
                 sqlite3* db;
-                if (sqlite3_open("Config/Dados.db", &db) == SQLITE_OK) {
+                if (sqlite3_open("Config/dados.db", &db) == SQLITE_OK) {
 
                     wxString query = wxString::Format("INSERT INTO HISTORICO (NOME, MEDIA, STATUS) VALUES ('%s', %.1f, '%s');",
                         nomealuno, res, status);
