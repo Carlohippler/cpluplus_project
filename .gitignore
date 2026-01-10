@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Pastas de Build (CMake)
 out/
 build/
@@ -25,3 +26,35 @@ CPackSourceConfig.cmake
 
 # Dados locais
 Config/dados.db
+=======
+# --- Pastas de saida e build
+[Bb]uild/
+out/
+x64/
+Debug/
+Release/
+# --- VS
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.db
+*.opendb
+# --- CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeSettings.json
+cmake_install.cmake
+install_manifest.txt
+CPackConfig.cmake
+CPackSourceConfig.cmake
+_CPack_Packages/
+# --- Binarios
+*.exe
+*.dll
+*.pdb
+*.msi
+*.zip
+>>>>>>> fe60a6bdce813b27d22d7332286b5eceb137be63
